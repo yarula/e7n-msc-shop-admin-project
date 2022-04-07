@@ -1,21 +1,38 @@
 import React, { useEffect, useState } from "react";
 import ItemsList from "./ItemsList";
 import AddItem from "./AddItem";
+import Nav from "./Nav";
 
 export default function Shop() {
   function getFromLocalStorage(key, defaultValue = "[]") {
     return JSON.parse(localStorage.getItem(key) || defaultValue);
   }
 
-  const [items, setItems] = useState(getFromLocalStorage("items", "[]"));
+  const [items, setItems] = useState([]); //getFromLocalStorage("items", "[]"));
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [valid, setValid] = useState("");
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    const itemsString = localStorage.getItem("items") || "[]";
-    console.log(itemsString);
-    setItems(JSON.parse(itemsString));
+    //const itemsString = localStorage.getItem("items") || "[]";
+    //console.log(itemsString);
+    //setItems(JSON.parse(itemsString));
+    (async () => {
+      setLoader(true);
+      try {
+        const response = await fetch("https://covid-shop-mcs.herokuapp.com")
+        const data = await response.json()
+        if (data) {
+          setItems(data)
+          console.log(`Fetched from API: ${data}`)
+        } 
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoader(false);
+      }
+    })()
   }, []);
 
   useEffect(() => {
@@ -48,7 +65,7 @@ export default function Shop() {
     ];
 
     setItems(newItems);
-    localStorage.setItem("items", JSON.stringify(newItems));
+    //localStorage.setItem("items", JSON.stringify(newItems));
     setName("");
     setDesc("");
     setValid("");
@@ -65,26 +82,28 @@ export default function Shop() {
   function handleDeleteClick(id) {
     const newItems = items.filter((item) => item.id !== id);
     setItems(newItems);
-    localStorage.setItem("items", JSON.stringify(newItems));
+    //localStorage.setItem("items", JSON.stringify(newItems));
   }
 
   return (
     <>
-      <h1 className="text-5xl font-bold underline">Admin Page</h1>
-      <AddItem
-        name={name}
-        desc={desc}
-        valid={valid}
-        onNameChange={handleNameChange}
-        onDescChange={handleDescChange}
-        onFormSubmit={handleFormSubmit}
-      />
-      <div>
-        {items.length === 0 && (
-          <p className="text-blue-400 font-extrabold">Добавьте первый товар</p>
-        )}
+      <Nav/>
+      <div className="container mx-auto">
+        <AddItem
+          name={name}
+          desc={desc}
+          valid={valid}
+          onNameChange={handleNameChange}
+          onDescChange={handleDescChange}
+          onFormSubmit={handleFormSubmit}
+        />
+        <div>
+          {items.length === 0 && (
+            <p className="text-blue-400 font-extrabold">Добавьте первый товар</p>
+          )}
+        </div>
+        <ItemsList items={items} onDeleteClick={handleDeleteClick} />
       </div>
-      <ItemsList items={items} onDeleteClick={handleDeleteClick} />
     </>
   );
 }
