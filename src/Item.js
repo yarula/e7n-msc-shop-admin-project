@@ -27,14 +27,14 @@ export default function Item(props) {
       </div>
       <div className="item-quantity">
         <button
-          className="item-less"
+          className="item-less btn rounded"
           disabled={total === 0}
           onClick={handleRemoveClick}
         >
           -
         </button>
         <h3 className="item-total">{total ? total : ""}</h3>
-        <button className="item-more" onClick={handleAddClick}>
+        <button className="rounded btn item-more" onClick={handleAddClick}>
           +
         </button>
       </div>

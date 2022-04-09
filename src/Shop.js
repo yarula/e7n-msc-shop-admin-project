@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ItemsList from "./ItemsList";
 import AddItem from "./AddItem";
 import Nav from "./Nav";
+import "./tailwind.index.css";
 
 export default function Shop() {
   function getFromLocalStorage(key, defaultValue = "[]") {
@@ -89,20 +90,26 @@ export default function Shop() {
     <>
       <Nav/>
       <div className="container mx-auto">
-        <AddItem
-          name={name}
-          desc={desc}
-          valid={valid}
-          onNameChange={handleNameChange}
-          onDescChange={handleDescChange}
-          onFormSubmit={handleFormSubmit}
-        />
-        <div>
-          {items.length === 0 && (
-            <p className="text-blue-400 font-extrabold">Добавьте первый товар</p>
-          )}
+        <div className="grid grid-cols-2 gap-8">
+          <div className="w-full">
+            <AddItem
+              name={name}
+              desc={desc}
+              valid={valid}
+              onNameChange={handleNameChange}
+              onDescChange={handleDescChange}
+              onFormSubmit={handleFormSubmit}
+            />
+            <div>
+              {items.length === 0 && (
+                <p className="text-blue-400 font-extrabold">Добавьте первый товар</p>
+              )}
+            </div>
+         </div>
+         <div className="w-full">
+          <ItemsList items={items} onDeleteClick={handleDeleteClick} />
+         </div>
         </div>
-        <ItemsList items={items} onDeleteClick={handleDeleteClick} />
       </div>
     </>
   );
