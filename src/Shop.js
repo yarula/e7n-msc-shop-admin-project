@@ -70,6 +70,19 @@ export default function Shop() {
     setName("");
     setDesc("");
     setValid("");
+
+    fetch("https://covid-shop-mcs.herokuapp.com", {
+      method: "POST",
+      body: JSON.stringify({name, desc}),
+      headers: {"Content-type": "application/json"}      
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+    })
+    .catch(error=>{
+      console.error(`FAILED to save an item: ${error}`)
+    })
   }
 
   function handleNameChange(event) {
