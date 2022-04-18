@@ -4,6 +4,7 @@ import AddItem from "./AddItem";
 import Nav from "./Nav";
 import "./tailwind.index.css";
 import useFetch from "./hooks/useFetch";
+import { v4 as uuidv4 } from 'uuid';
 
 
 export default function Shop() {
@@ -51,7 +52,7 @@ export default function Shop() {
     const newItems = [
       ...items,
       {
-        id: items.length + 1,
+        id: uuidv4(),
         name: name,
         desc: desc
       }
