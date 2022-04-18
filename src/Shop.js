@@ -3,6 +3,8 @@ import ItemsList from "./ItemsList";
 import AddItem from "./AddItem";
 import Nav from "./Nav";
 import "./tailwind.index.css";
+import useFetch from "./hooks/useFetch";
+
 
 export default function Shop() {
   function getFromLocalStorage(key, defaultValue = "[]") {
@@ -13,28 +15,10 @@ export default function Shop() {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [valid, setValid] = useState("");
-  const [loader, setLoader] = useState(false);
+  //const [loader, setLoader] = useState(false);
 
-  useEffect(() => {
-    //const itemsString = localStorage.getItem("items") || "[]";
-    //console.log(itemsString);
-    //setItems(JSON.parse(itemsString));
-    (async () => {
-      setLoader(true);
-      try {
-        const response = await fetch("https://covid-shop-mcs.herokuapp.com")
-        const data = await response.json()
-        if (data) {
-          setItems(data)
-          console.log(`Fetched from API: ${data}`)
-        } 
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoader(false);
-      }
-    })()
-  }, []);
+  const {get, post, loader} = useFetch()
+  
 
   useEffect(() => {
     if (items.length === 0) {
