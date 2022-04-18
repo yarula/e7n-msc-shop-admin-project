@@ -11,7 +11,7 @@ export default function Shop() {
     return JSON.parse(localStorage.getItem(key) || defaultValue);
   }
 
-  const [items, setItems] = useState([]); //getFromLocalStorage("items", "[]"));
+  const [items, setItems] = useState(getFromLocalStorage("items", "[]"));
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [valid, setValid] = useState("");
@@ -19,6 +19,14 @@ export default function Shop() {
 
   const {get, post, loader} = useFetch()
   
+
+  useEffect(() => {
+    get("https://covid-shop-mcs.herokuapp.com")
+    .then(data => {
+      console.log(data)
+      setItems(data)
+    })
+  }, []);
 
   useEffect(() => {
     if (items.length === 0) {
@@ -50,20 +58,12 @@ export default function Shop() {
     ];
 
     setItems(newItems);
-    //localStorage.setItem("items", JSON.stringify(newItems));
+    localStorage.setItem("items", JSON.stringify(newItems));
     setName("");
     setDesc("");
     setValid("");
 
-    fetch("https://covid-shop-mcs.herokuapp.com", {
-      method: "POST",
-      body: JSON.stringify({name, desc}),
-      headers: {"Content-type": "application/json"}      
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-    })
+    post("https://covid-shop-mcs.herokuapp.com", {name, desc})
     .catch(error=>{
       console.error(`FAILED to save an item: ${error}`)
     })
